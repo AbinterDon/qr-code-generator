@@ -5,19 +5,21 @@ import (
 	"net/http"
 
 	"github.com/abinter/qr-code-generator/internal/config"
+	"github.com/abinter/qr-code-generator/internal/handler"
+	"github.com/abinter/qr-code-generator/internal/usecase"
 )
 
 func main() {
 	cfg := config.Load()
 
-	mux := http.NewServeMux()
-	mux.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusOK)
-		w.Write([]byte("OK"))
-	})
+	// TODO: replace with real DB repository in Stage 4
+	uc := usecase.NewQRCodeUseCase(nil, cfg.BaseURL)
+
+	qrHandler := handler.NewQRCodeHandler(uc)
+	router := handler.NewRouter(qrHandler)
 
 	log.Printf("server starting on %s", cfg.ServerAddr)
-	if err := http.ListenAndServe(cfg.ServerAddr, mux); err != nil {
+	if err := http.ListenAndServe(cfg.ServerAddr, router); err != nil {
 		log.Fatalf("server error: %v", err)
 	}
 }
