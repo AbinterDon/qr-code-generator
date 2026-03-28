@@ -12,3 +12,9 @@ coverage.out
 # OS
 .DS_Store
 Thumbs.db
+
+# Claude Code local settings (personal, not for sharing)
+.claude/
+
+# Design documents
+*.pdf
