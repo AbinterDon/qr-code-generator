@@ -5,8 +5,11 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/redis/go-redis/v9"
+
 	"github.com/abinter/qr-code-generator/db"
 	"github.com/abinter/qr-code-generator/internal/config"
+	"github.com/abinter/qr-code-generator/internal/domain"
 	"github.com/abinter/qr-code-generator/internal/handler"
 	"github.com/abinter/qr-code-generator/internal/repository"
 	"github.com/abinter/qr-code-generator/internal/usecase"
@@ -21,9 +24,22 @@ func main() {
 	}
 	defer pool.Close()
 
-	repo := repository.NewPostgresRepository(pool)
-	uc := usecase.NewQRCodeUseCase(repo, cfg.BaseURL)
+	var repo domain.QRCodeRepository = repository.NewPostgresRepository(pool)
 
+	if cfg.RedisURL != "" {
+		opt, err := redis.ParseURL(cfg.RedisURL)
+		if err != nil {
+			log.Fatalf("redis url: %v", err)
+		}
+		client := redis.NewClient(opt)
+		if err := client.Ping(context.Background()).Err(); err != nil {
+			log.Fatalf("redis ping: %v", err)
+		}
+		repo = repository.NewCachedRepository(repo, client, cfg.CacheTTL)
+		log.Printf("redis cache enabled (ttl=%s)", cfg.CacheTTL)
+	}
+
+	uc := usecase.NewQRCodeUseCase(repo, cfg.BaseURL)
 	qrHandler := handler.NewQRCodeHandler(uc)
 	router := handler.NewRouter(qrHandler)
 

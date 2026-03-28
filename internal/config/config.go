@@ -2,6 +2,7 @@ package config
 
 import (
 	"os"
+	"time"
 )
 
 type Config struct {
@@ -9,6 +10,7 @@ type Config struct {
 	DatabaseURL string
 	RedisURL    string
 	BaseURL     string // e.g. https://myqrcode.com
+	CacheTTL    time.Duration
 }
 
 func Load() *Config {
@@ -17,6 +19,7 @@ func Load() *Config {
 		DatabaseURL: getEnv("DATABASE_URL", ""),
 		RedisURL:    getEnv("REDIS_URL", ""),
 		BaseURL:     getEnv("BASE_URL", "http://localhost:8080"),
+		CacheTTL:    24 * time.Hour,
 	}
 }
 
