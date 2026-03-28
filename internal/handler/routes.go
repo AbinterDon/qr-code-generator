@@ -16,6 +16,7 @@ func NewRouter(qr *QRCodeHandler) http.Handler {
 
 	r.Route("/v1", func(r chi.Router) {
 		r.Post("/qr_code", qr.Create)
+		r.Get("/qr_code_image/{qr_token}", qr.GetImage)
 		r.Get("/qr_code/{qr_token}", qr.Get)
 		r.Put("/qr_code/{qr_token}", qr.Edit)
 		r.Delete("/qr_code/{qr_token}", qr.Delete)
