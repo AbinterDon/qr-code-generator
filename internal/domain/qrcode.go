@@ -1,6 +1,9 @@
 package domain
 
-import "time"
+import (
+	"context"
+	"time"
+)
 
 type QRCode struct {
 	ID        int64
@@ -12,9 +15,9 @@ type QRCode struct {
 }
 
 type QRCodeRepository interface {
-	Create(qrcode *QRCode) error
-	GetByToken(token string) (*QRCode, error)
-	GetByUserID(userID string) ([]*QRCode, error)
-	Update(token string, url string) error
-	Delete(token string) error
+	Create(ctx context.Context, qrcode *QRCode) error
+	GetByToken(ctx context.Context, token string) (*QRCode, error)
+	GetByUserID(ctx context.Context, userID string) ([]*QRCode, error)
+	Update(ctx context.Context, token string, url string) error
+	Delete(ctx context.Context, token string) error
 }

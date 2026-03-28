@@ -39,7 +39,7 @@ func TestCreateQRCode(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			repo := &domain.MockQRCodeRepository{
-				CreateFunc: func(qrcode *domain.QRCode) error {
+				CreateFunc: func(ctx context.Context, qrcode *domain.QRCode) error {
 					return tt.repoErr
 				},
 			}
@@ -95,7 +95,7 @@ func TestGetQRCode(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			repo := &domain.MockQRCodeRepository{
-				GetByTokenFunc: func(token string) (*domain.QRCode, error) {
+				GetByTokenFunc: func(ctx context.Context, token string) (*domain.QRCode, error) {
 					return tt.repoRet, tt.repoErr
 				},
 			}
@@ -144,7 +144,7 @@ func TestEditQRCode(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			repo := &domain.MockQRCodeRepository{
-				UpdateFunc: func(token string, url string) error {
+				UpdateFunc: func(ctx context.Context, token string, url string) error {
 					return tt.repoErr
 				},
 			}
@@ -181,7 +181,7 @@ func TestDeleteQRCode(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			repo := &domain.MockQRCodeRepository{
-				DeleteFunc: func(token string) error {
+				DeleteFunc: func(ctx context.Context, token string) error {
 					return tt.repoErr
 				},
 			}
@@ -198,7 +198,7 @@ func TestDeleteQRCode(t *testing.T) {
 
 func TestListQRCodes(t *testing.T) {
 	repo := &domain.MockQRCodeRepository{
-		GetByUserIDFunc: func(userID string) ([]*domain.QRCode, error) {
+		GetByUserIDFunc: func(ctx context.Context, userID string) ([]*domain.QRCode, error) {
 			return []*domain.QRCode{
 				{QRToken: "tok1", UserID: userID},
 				{QRToken: "tok2", UserID: userID},

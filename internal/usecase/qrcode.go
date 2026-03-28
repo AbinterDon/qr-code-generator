@@ -33,7 +33,7 @@ func (uc *QRCodeUseCase) CreateQRCode(ctx context.Context, userID, url string) (
 			URL:     url,
 		}
 
-		err := uc.repo.Create(qr)
+		err := uc.repo.Create(ctx, qr)
 		if err == nil {
 			return qr, nil
 		}
@@ -46,7 +46,7 @@ func (uc *QRCodeUseCase) CreateQRCode(ctx context.Context, userID, url string) (
 }
 
 func (uc *QRCodeUseCase) GetQRCode(ctx context.Context, qrToken string) (*domain.QRCode, error) {
-	qr, err := uc.repo.GetByToken(qrToken)
+	qr, err := uc.repo.GetByToken(ctx, qrToken)
 	if err != nil {
 		return nil, fmt.Errorf("get qr code: %w", err)
 	}
@@ -58,21 +58,21 @@ func (uc *QRCodeUseCase) EditQRCode(ctx context.Context, qrToken, newURL string)
 		return err
 	}
 
-	if err := uc.repo.Update(qrToken, newURL); err != nil {
+	if err := uc.repo.Update(ctx, qrToken, newURL); err != nil {
 		return fmt.Errorf("edit qr code: %w", err)
 	}
 	return nil
 }
 
 func (uc *QRCodeUseCase) DeleteQRCode(ctx context.Context, qrToken string) error {
-	if err := uc.repo.Delete(qrToken); err != nil {
+	if err := uc.repo.Delete(ctx, qrToken); err != nil {
 		return fmt.Errorf("delete qr code: %w", err)
 	}
 	return nil
 }
 
 func (uc *QRCodeUseCase) ListQRCodes(ctx context.Context, userID string) ([]*domain.QRCode, error) {
-	qrs, err := uc.repo.GetByUserID(userID)
+	qrs, err := uc.repo.GetByUserID(ctx, userID)
 	if err != nil {
 		return nil, fmt.Errorf("list qr codes: %w", err)
 	}

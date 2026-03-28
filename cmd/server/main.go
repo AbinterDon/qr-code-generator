@@ -1,19 +1,28 @@
 package main
 
 import (
+	"context"
 	"log"
 	"net/http"
 
+	"github.com/abinter/qr-code-generator/db"
 	"github.com/abinter/qr-code-generator/internal/config"
 	"github.com/abinter/qr-code-generator/internal/handler"
+	"github.com/abinter/qr-code-generator/internal/repository"
 	"github.com/abinter/qr-code-generator/internal/usecase"
 )
 
 func main() {
 	cfg := config.Load()
 
-	// TODO: replace with real DB repository in Stage 4
-	uc := usecase.NewQRCodeUseCase(nil, cfg.BaseURL)
+	pool, err := db.Connect(context.Background(), cfg.DatabaseURL)
+	if err != nil {
+		log.Fatalf("database: %v", err)
+	}
+	defer pool.Close()
+
+	repo := repository.NewPostgresRepository(pool)
+	uc := usecase.NewQRCodeUseCase(repo, cfg.BaseURL)
 
 	qrHandler := handler.NewQRCodeHandler(uc)
 	router := handler.NewRouter(qrHandler)

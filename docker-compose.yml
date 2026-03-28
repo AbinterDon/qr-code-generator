@@ -1,0 +1,14 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: qr
+      POSTGRES_PASSWORD: qr
+      POSTGRES_DB: qrcode
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U qr -d qrcode"]
+      interval: 5s
+      timeout: 5s
+      retries: 5

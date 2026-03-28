@@ -1,30 +1,32 @@
 package domain
 
+import "context"
+
 // MockQRCodeRepository is a test double for QRCodeRepository.
 type MockQRCodeRepository struct {
-	CreateFunc      func(qrcode *QRCode) error
-	GetByTokenFunc  func(token string) (*QRCode, error)
-	GetByUserIDFunc func(userID string) ([]*QRCode, error)
-	UpdateFunc      func(token string, url string) error
-	DeleteFunc      func(token string) error
+	CreateFunc      func(ctx context.Context, qrcode *QRCode) error
+	GetByTokenFunc  func(ctx context.Context, token string) (*QRCode, error)
+	GetByUserIDFunc func(ctx context.Context, userID string) ([]*QRCode, error)
+	UpdateFunc      func(ctx context.Context, token string, url string) error
+	DeleteFunc      func(ctx context.Context, token string) error
 }
 
-func (m *MockQRCodeRepository) Create(qrcode *QRCode) error {
-	return m.CreateFunc(qrcode)
+func (m *MockQRCodeRepository) Create(ctx context.Context, qrcode *QRCode) error {
+	return m.CreateFunc(ctx, qrcode)
 }
 
-func (m *MockQRCodeRepository) GetByToken(token string) (*QRCode, error) {
-	return m.GetByTokenFunc(token)
+func (m *MockQRCodeRepository) GetByToken(ctx context.Context, token string) (*QRCode, error) {
+	return m.GetByTokenFunc(ctx, token)
 }
 
-func (m *MockQRCodeRepository) GetByUserID(userID string) ([]*QRCode, error) {
-	return m.GetByUserIDFunc(userID)
+func (m *MockQRCodeRepository) GetByUserID(ctx context.Context, userID string) ([]*QRCode, error) {
+	return m.GetByUserIDFunc(ctx, userID)
 }
 
-func (m *MockQRCodeRepository) Update(token string, url string) error {
-	return m.UpdateFunc(token, url)
+func (m *MockQRCodeRepository) Update(ctx context.Context, token string, url string) error {
+	return m.UpdateFunc(ctx, token, url)
 }
 
-func (m *MockQRCodeRepository) Delete(token string) error {
-	return m.DeleteFunc(token)
+func (m *MockQRCodeRepository) Delete(ctx context.Context, token string) error {
+	return m.DeleteFunc(ctx, token)
 }
